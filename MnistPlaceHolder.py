@@ -4,6 +4,7 @@ from keras.datasets import mnist
 from keras.models import Model
 from keras.layers import Input, Dense
 import numpy as np
+import matplotlib.pyplot as plt
 from numpy import ndarray
 
 
@@ -24,6 +25,9 @@ class MnistPlaceHolder():
         encoded = Dense(encoding_dim, activation='relu')(input_img)
         return Model(input_img, encoded)
 
+    def plot(self):
+        plt.imshow(self.x_train[0])
+
     def getEmbeddings(self):
         x_train_float32 = self.x_train[0:2].reshape(-1,28,28).astype(np.float32)
         model = self.getModel()
@@ -31,3 +35,7 @@ class MnistPlaceHolder():
         print(embeddings.shape)
         return embeddings
 
+if __name__ == '__main__':
+    myclass = MnistPlaceHolder()
+    myclass.plot()
+    print('------ Done ----')
