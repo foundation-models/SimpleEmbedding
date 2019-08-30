@@ -39,10 +39,14 @@ class TestMnistPlaceHolder(TestCase):
         self.assertEqual(max(instance.x_train[0].reshape(-1)), 255)
         self.assertEqual(instance.x_train.dtype, np.uint8)
 
-    def test_regression_init(self):
-        instance = Regression(2)
-        self.assertTrue(np.array_equal([[0.],[0.]], instance.w))
-
     def test_sigmoid(self):
-        instance = Regression()
-        self.assertEqual(0.5, instance.sigmoid(0))
+        self.assertEqual(0.5, Regression.sigmoid(0))
+
+    def test_propagate(self):
+        w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1, 2], [3, 4]]), np.array([[1, 0]])
+        instance = Regression(X,Y)
+        grads, cost = instance.propagate(w,b)
+        self.assertTrue(np.allclose([[0.99993216],[1.99980262]],grads["dw"]))
+        self.assertTrue(np.allclose(0.49993523062470574, grads["db"]))
+        self.assertTrue(np.allclose(6.000064773192205, cost))
+

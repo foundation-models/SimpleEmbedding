@@ -5,8 +5,10 @@ import numpy as np
 
 
 class Regression(object):
-    def __init__(self, dim):
-        self.w = np.zeros(shape=[dim,1])
+    def __init__(self, X, Y):
+        self.X = X #/ 255.
+        self.Y = Y
+        self.w = np.zeros(shape=[X.shape[1],1])
         self.b = 0
 
 
@@ -14,6 +16,19 @@ class Regression(object):
     def sigmoid(z):
         sig = 1/(1+np.exp(-z))
         return sig
+
+    def propagate(self, w, b):
+        self.w = w
+        self.b = b
+        m = self.X.shape[1]
+        z = np.dot(self.w.T, self.X) + self.b
+        A = self.sigmoid(z)
+        cost = (-1 / m) * np.sum(self.Y * np.log(A) + (1 - self.Y) * np.log(1 - A))
+        cost = np.squeeze(cost)
+        db = 1 / m * np.sum(A - self.Y)
+        dw = 1 / m * np.dot(self.X, (A - self.Y).T)
+        grads = {"dw":dw, "db":db }
+        return grads, cost
 
 
 class MnistWrapper:
