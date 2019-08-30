@@ -4,16 +4,28 @@ from keras.layers import Input, Dense
 import numpy as np
 
 
-def load():
-    """
-    :return: Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test)
-    """
-    return mnist.load_data()
+class Regression(object):
+    def __init__(self, dim):
+        self.w = np.zeros(shape=[dim,1])
+        self.b = 0
 
 
-class MnistPlaceHolder:
+    @staticmethod
+    def sigmoid(z):
+        sig = 1/(1+np.exp(-z))
+        return sig
+
+
+class MnistWrapper:
     def __init__(self):
-        (self.x_train, _), (_, _) = load()
+        (self.x_train, _), (_, _) = self.load()
+
+    @staticmethod
+    def load():
+        """
+        :return: Tuple of Numpy arrays: (x_train, y_train), (x_test, y_test)
+        """
+        return mnist.load_data()
 
     @staticmethod
     def get_model(encoding_dim=256):
