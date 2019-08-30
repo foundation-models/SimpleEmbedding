@@ -32,8 +32,8 @@ class TestMnistPlaceHolder(TestCase):
 
     def test_mnist_init(self):
         instance = MnistWrapper()
-        #plt.imshow(instance.x_train[0])
-        #plt.show()
+        plt.imshow(instance.x_train[0])
+        plt.show()
         self.assertIsNotNone(instance.x_train, msg='could not load mnist')
         self.assertEqual(instance.x_train.shape, (60000, 28, 28))
         self.assertEqual(max(instance.x_train[0].reshape(-1)), 255)
@@ -50,12 +50,16 @@ class TestMnistPlaceHolder(TestCase):
         self.assertTrue(np.allclose(0.49993523062470574, db))
         self.assertTrue(np.allclose(6.000064773192205, cost))
 
-    def test_optimize(self):
+    def test_train(self):
         w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1, 2], [3, 4]]), np.array([[1, 0]])
         instance = Regression(X,Y)
-        params, grads, costs = instance.optimize(w=w, b=b, num_iterations=100, learning_rate=0.009)
-        self.assertTrue(np.allclose([[ 0.1124579 ],[ 0.23106775]],params["w"]))
-        self.assertTrue(np.allclose(1.55930492484, params["b"]))
-        self.assertTrue(np.allclose([[0.90158428],[1.76250842]],grads["dw"]))
-        self.assertTrue(np.allclose(0.430462071679, grads["db"]))
+        instance.initialize(w,b)
+        costs = instance.train(num_iterations=10000, learning_rate=0.009)
+        self.assertTrue(np.allclose([[-5.03678642],[0.8384754]],instance.W))
+        self.assertTrue(np.allclose(4.437630910971542, instance.bias))
+        # print(instance.W)
+        # print(instance.bias)
+        # print(costs[0:10])
+        # print(costs[-10:])
+        self.assertTrue(np.allclose(instance.predict(X),Y))
 

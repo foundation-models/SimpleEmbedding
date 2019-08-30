@@ -5,11 +5,17 @@ import numpy as np
 
 
 class Regression(object):
+    def initialize(self, w=None, b=0):
+        if(w is not None):
+            self.W = w
+        else:
+            np.zeros(shape=[self.X.shape[1],1])
+        self.bias = b
+
     def __init__(self, X, Y):
         self.X = X #/ 255.
         self.Y = Y
-        self.w = np.zeros(shape=[X.shape[1],1])
-        self.b = 0
+        self.initialize()
 
 
     @staticmethod
@@ -18,10 +24,8 @@ class Regression(object):
         return sig
 
     def propagate(self, w, b):
-        self.w = w
-        self.b = b
         m = self.X.shape[1]
-        z = np.dot(self.w.T, self.X) + self.b
+        z = np.dot(w.T, self.X) + b
         A = self.sigmoid(z)
         cost = (-1 / m) * np.sum(self.Y * np.log(A) + (1 - self.Y) * np.log(1 - A))
         cost = np.squeeze(cost)
@@ -29,19 +33,38 @@ class Regression(object):
         dw = 1 / m * np.dot(self.X, (A - self.Y).T)
         return dw, db, cost
 
-    def optimize(self, w, b, num_iterations, learning_rate):
+    def train(self, num_iterations, learning_rate):
         costs = []
+        w = self.W
+        b = self.bias
         for i in range(num_iterations):
             dw, db, cost = self.propagate(w, b)
             w = w - learning_rate * dw
             b = b - learning_rate * db
             if(i%100 == 0):
                 costs.append(cost)
-                print('cost after {} iteration is {}'.format(i, cost))
-        params = {"w":w, "b":b }
-        grads = {"dw":dw, "db":db }
-        return params, grads, costs
+                #print('cost after {} iteration is {}'.format(i, cost))
+        self.W = w
+        self.bias = b
+        return costs
 
+    def predict(self, new_X):
+        z = np.dot(self.W.T,new_X) + self.bias
+        A = self.sigmoid(z)
+        prediction = np.zeros(shape=[1,self.X.shape[1]])
+
+        for i in range(A.shape[1]):
+            if A[0, i] > 0.5:
+                prediction[0, i] = 1
+            else:
+                prediction[0, i] = 0
+        return prediction
+
+
+    def train_test(self, epochs):
+        self.initialize()
+        costs = self.optimize(num_iterations=epochs, learning_rate=0.009)
+        print(self.predict(self.X))
 
 class MnistWrapper:
     def __init__(self):
