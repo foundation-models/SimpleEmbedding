@@ -5,17 +5,13 @@ import numpy as np
 
 
 class Regression(object):
-    def initialize(self, w=None, b=0):
-        if(w is not None):
-            self.W = w
-        else:
-            np.zeros(shape=[self.X.shape[1],1])
-        self.bias = b
-
-    def __init__(self, X, Y):
+    def __init__(self, X, Y, w=None, b=0):
         self.X = X #/ 255.
         self.Y = Y
-        self.initialize()
+        self.W = w
+        if(w is None):
+            self.W = np.zeros(shape=[self.X.shape[0],1])
+        self.bias = b
 
 
     @staticmethod
@@ -51,7 +47,7 @@ class Regression(object):
     def predict(self, new_X):
         z = np.dot(self.W.T,new_X) + self.bias
         A = self.sigmoid(z)
-        prediction = np.zeros(shape=[1,self.X.shape[1]])
+        prediction = np.zeros(shape=[1,new_X.shape[1]])
 
         for i in range(A.shape[1]):
             if A[0, i] > 0.5:
@@ -61,14 +57,9 @@ class Regression(object):
         return prediction
 
 
-    def train_test(self, epochs):
-        self.initialize()
-        costs = self.optimize(num_iterations=epochs, learning_rate=0.009)
-        print(self.predict(self.X))
-
 class MnistWrapper:
     def __init__(self):
-        (self.x_train, _), (_, _) = self.load()
+        (self.X_train, self.Y_train), (self.X_test, self.Y_test) = self.load()
 
     @staticmethod
     def load():
