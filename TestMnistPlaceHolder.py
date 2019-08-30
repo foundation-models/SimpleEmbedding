@@ -1,8 +1,7 @@
 from unittest import TestCase
 from MnistPlaceHolder import MnistPlaceHolder
 import numpy as np
-import tensorflow as tf
-from numpy import dtype
+import matplotlib.pyplot as plt
 import warnings
 
 
@@ -25,11 +24,15 @@ class TestMnistPlaceHolder(TestCase):
 
     def test_get_embeddings(self):
         instance = MnistPlaceHolder()
-        float32array = instance.get_embeddings()
-        self.assertTrue(float32array.dtype, np.float32)
+        embeddings = instance.get_embeddings()
+        plt.plot(embeddings[0])
+        plt.show()
+        self.assertTrue(embeddings.dtype, np.float32)
 
     def test_init(self):
         instance = MnistPlaceHolder()
+        plt.imshow(self.x_train[0])
+        plt.show()
         self.assertIsNotNone(instance.x_train, msg='could not load mnist')
         self.assertEqual(instance.x_train.shape, (60000, 28, 28))
         self.assertEqual(instance.x_train.dtype, np.uint8)
