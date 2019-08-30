@@ -45,8 +45,17 @@ class TestMnistPlaceHolder(TestCase):
     def test_propagate(self):
         w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1, 2], [3, 4]]), np.array([[1, 0]])
         instance = Regression(X,Y)
-        grads, cost = instance.propagate(w,b)
-        self.assertTrue(np.allclose([[0.99993216],[1.99980262]],grads["dw"]))
-        self.assertTrue(np.allclose(0.49993523062470574, grads["db"]))
+        dw, db, cost = instance.propagate(w,b)
+        self.assertTrue(np.allclose([[0.99993216],[1.99980262]],dw))
+        self.assertTrue(np.allclose(0.49993523062470574, db))
         self.assertTrue(np.allclose(6.000064773192205, cost))
+
+    def test_optimize(self):
+        w, b, X, Y = np.array([[1], [2]]), 2, np.array([[1, 2], [3, 4]]), np.array([[1, 0]])
+        instance = Regression(X,Y)
+        params, grads, costs = instance.optimize(w=w, b=b, num_iterations=100, learning_rate=0.009)
+        self.assertTrue(np.allclose([[ 0.1124579 ],[ 0.23106775]],params["w"]))
+        self.assertTrue(np.allclose(1.55930492484, params["b"]))
+        self.assertTrue(np.allclose([[0.90158428],[1.76250842]],grads["dw"]))
+        self.assertTrue(np.allclose(0.430462071679, grads["db"]))
 

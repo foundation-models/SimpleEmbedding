@@ -27,8 +27,20 @@ class Regression(object):
         cost = np.squeeze(cost)
         db = 1 / m * np.sum(A - self.Y)
         dw = 1 / m * np.dot(self.X, (A - self.Y).T)
+        return dw, db, cost
+
+    def optimize(self, w, b, num_iterations, learning_rate):
+        costs = []
+        for i in range(num_iterations):
+            dw, db, cost = self.propagate(w, b)
+            w = w - learning_rate * dw
+            b = b - learning_rate * db
+            if(i%100 == 0):
+                costs.append(cost)
+                print('cost after {} iteration is {}'.format(i, cost))
+        params = {"w":w, "b":b }
         grads = {"dw":dw, "db":db }
-        return grads, cost
+        return params, grads, costs
 
 
 class MnistWrapper:
