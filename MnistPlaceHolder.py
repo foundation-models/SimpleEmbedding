@@ -29,7 +29,7 @@ class Regression(object):
         dw = 1 / m * np.dot(self.X, (A - self.Y).T)
         return dw, db, cost
 
-    def train(self, num_iterations, learning_rate):
+    def train(self, num_iterations, learning_rate, metrics_capture_rate):
         costs = []
         w = self.W
         b = self.bias
@@ -37,7 +37,7 @@ class Regression(object):
             dw, db, cost = self.propagate(w, b)
             w = w - learning_rate * dw
             b = b - learning_rate * db
-            if(i%100 == 0):
+            if(i%metrics_capture_rate == 0):
                 costs.append(cost)
                 #print('cost after {} iteration is {}'.format(i, cost))
         self.W = w
